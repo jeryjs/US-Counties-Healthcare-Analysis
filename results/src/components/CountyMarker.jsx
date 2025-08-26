@@ -107,7 +107,7 @@ const CountyMarker = ({
         className="custom-tooltip"
         permanent={isSelected}
       >
-        <div className="p-3 bg-black/95 border border-neon-blue rounded-lg text-white text-sm min-w-[200px]">
+        <div className="p-3 bg-black/95 border-neon-blue rounded-lg text-white text-sm min-w-[200px]">
           {/* Header */}
           <div className="font-bold text-neon-blue mb-2 border-b border-gray-700 pb-2">
             {tooltipData.name}
@@ -142,18 +142,52 @@ const CountyMarker = ({
             </div>
           )}
 
-          {/* Base info */}
-          <div className="border-t border-gray-700 pt-2 mt-2 space-y-1">
-            <div className="flex justify-between text-xs">
-              <span className="text-gray-400">Population:</span>
-              <span className="font-mono text-gray-300">{tooltipData.population}</span>
-            </div>
-            <div className="text-xs text-gray-400">
-              <span className="text-neon-pink">{tooltipData.cluster}</span>
-            </div>
+          {/* Base info as a compact table */}
+          <div className="border-t border-gray-700 pt-2 mt-2">
+            <table className="w-full text-xs text-gray-300">
+              <tbody>
+                <tr>
+                  <td className="pr-2 text-gray-400">Population:</td>
+                  <td className="font-mono text-right">{tooltipData.population}</td>
+                </tr>
+                {/* Dynamically render all other available county fields */}
+                {Object.entries(county)
+                  .filter(([key, value]) => {
+                    const excluded = [
+                      'County', 'State', 'lat', 'lng', 'Population', 'Cluster_Name_Detailed',
+                      'Healthcare_Access', 'Healthcare_Access_Percentile', 'Opportunity_Score',
+                      'Vulnerability_Index', 'Resilience_Score', 'Cluster_Description',
+                      'FIPS', 'Cluster_5', 'Cluster_7', 'Cluster_10', 'rank_in_cluster',
+                      'total_in_cluster', 'performance_vs_cluster', 'cluster_avg_score',
+                      'Disability_Rate', 'LEP_Rate', 'No_Vehicle_Rate', 'Broadband_Rate',
+                      'Insurance_Rate', 'Education_Rate'
+                    ];
+                    return (
+                      !excluded.includes(key) &&
+                      value !== null &&
+                      value !== undefined &&
+                      value !== '' &&
+                      value > 0 &&
+                      !(typeof value === 'number' && isNaN(value))
+                    );
+                  })
+                  .map(([key, value]) => (
+                    <tr key={key}>
+                      <td className="pr-2 text-gray-400">{key.replace(/_/g, ' ')}:</td>
+                      <td className="font-mono text-right">
+                        {typeof value === 'number'
+                          ? value.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                          : String(value)}
+                      </td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td className="pr-2 text-gray-400">Cluster:</td>
+                  <td className="text-neon-pink text-right">{tooltipData.cluster}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
-          {/* Click hint */}
           {!isSelected && (
             <div className="text-xs text-center text-gray-500 mt-2 pt-1 border-t border-gray-800">
               Click for detailed analysis
