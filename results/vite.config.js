@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const isGithub = process.env.GITHUB_PAGES === 'true';
+const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   plugins: [react()],
-  base: isGithub ? '/US-Counties-Healthcare-Analysis/' : '/',
+  base: isProduction ? '/US-Counties-Healthcare-Analysis/' : '/',
 })
