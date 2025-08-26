@@ -167,7 +167,7 @@ const DetailedAnalysis = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-96 overflow-y-auto custom-scrollbar">
+        <div className="p-6 overflow-y-auto custom-scrollbar">
           <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
               <motion.div

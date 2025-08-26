@@ -62,7 +62,7 @@ const StateComparison = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         onClick={onToggle}
-        className="fixed bottom-4 left-4 z-40 p-3 glass-dark rounded-full border border-neon-green/30 hover:border-neon-green/60 transition-all group"
+        className="fixed bottom-40 right-4 z-40 p-3 glass-dark rounded-full border border-neon-green/30 hover:border-neon-green/60 transition-all group"
       >
         <BarChart3 className="w-5 h-5 text-neon-green group-hover:text-white" />
       </motion.button>
@@ -74,7 +74,7 @@ const StateComparison = ({
       initial={{ opacity: 0, y: 100 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 100 }}
-      className="fixed bottom-4 left-4 z-40 w-96 max-h-[60vh] overflow-hidden"
+      className="fixed bottom-40 right-4 z-40 w-96 max-h-[60vh] overflow-hidden"
     >
       <div className="glass-dark rounded-2xl border border-neon-green/30">
         {/* Header */}

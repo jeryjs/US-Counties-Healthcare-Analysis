@@ -208,8 +208,18 @@ const App = () => {
         </div>
       </div>
 
+      {/* Debug overlay */}
+      {/* {process.env.NODE_ENV === 'development' && (
+        <div className="fixed top-4 right-4 z-50 bg-black/80 text-white p-4 rounded-lg text-xs max-w-xs">
+          <div>Counties loaded: {counties.length}</div>
+          <div>Visual mode: {visualMode}</div>
+          <div>Color scale: {currentColorScale?.name || 'none'}</div>
+          <div>Selected: {selectedCounty?.County || 'none'}</div>
+        </div>
+      )} */}
+
       {/* Header */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50"
@@ -231,7 +241,7 @@ const App = () => {
             </div>
           </div>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Main Map */}
       <MapView
@@ -287,7 +297,7 @@ const App = () => {
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.5 }}
-        className="absolute top-20 right-4 z-40"
+        className="absolute top-4 right-4 z-40"
       >
         <div className="glass-dark p-4 rounded-xl border border-neon-pink/30 w-64">
           <h3 className="text-sm font-cyber font-bold text-white mb-3 flex items-center gap-2">
@@ -376,7 +386,7 @@ const App = () => {
                   {(counties.reduce((sum, c) => sum + c.Population, 0) / 1000000).toFixed(0)}M
                 </span>
               </div>
-              {selectedCounty && (
+              {/* {selectedCounty && (
                 <div className="pt-2 border-t border-gray-700">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Selected:</span>
@@ -385,7 +395,7 @@ const App = () => {
                     </span>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </motion.div>

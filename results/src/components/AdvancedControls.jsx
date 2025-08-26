@@ -193,11 +193,10 @@ const AdvancedControls = ({
                   <button
                     key={mode.id}
                     onClick={() => setVisualMode(mode.id)}
-                    className={`w-full p-3 rounded-lg border transition-all text-left ${
-                      visualMode === mode.id
-                        ? 'border-neon-blue bg-neon-blue/10 text-white'
-                        : 'border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gray-500'
-                    }`}
+                    className={`w-full p-3 rounded-lg border transition-all text-left ${visualMode === mode.id
+                      ? 'border-neon-blue bg-neon-blue/10 text-white'
+                      : 'border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gray-500'
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       <mode.icon className="w-5 h-5 mt-0.5 text-neon-blue" />
@@ -220,7 +219,7 @@ const AdvancedControls = ({
                 className="space-y-4"
               >
                 <h3 className="text-sm font-semibold text-white mb-3">Data Filters</h3>
-                
+
                 {/* Region filter */}
                 <div>
                   <label className="block text-xs font-medium text-gray-300 mb-2">
