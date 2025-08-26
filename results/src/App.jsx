@@ -84,7 +84,19 @@ const App = () => {
           clustersResponse.json()
         ]);
 
-        setCounties(countiesData);
+        // Process and clean the data
+        const processedCounties = countiesData.map(county => ({
+          ...county,
+          Healthcare_Access: county.Healthcare_Access || 50,
+          Opportunity_Score: county.Opportunity_Score || 50,
+          Vulnerability_Index: county.Vulnerability_Index || 50,
+          Population: county.Population || 50000,
+          Cluster_7: county.Cluster_7 !== undefined ? county.Cluster_7 : 0,
+          lat: county.lat || county.latitude || 39,
+          lng: county.lng || county.longitude || -98
+        }));
+
+        setCounties(processedCounties);
         setStateData(statesData);
         setColorScales(colorScalesData);
         setRecommendations(recommendationsData);
@@ -93,12 +105,18 @@ const App = () => {
         setClusterDefinitions(clustersData);
         
         console.log('Loaded comprehensive dataset:', {
-          counties: countiesData.length,
+          counties: processedCounties.length,
           states: statesData.length,
           recommendations: recommendationsData.length,
           projections: projectionsData.length,
           insights: insightsData.length
         });
+        
+        // Debug: Check first county structure
+        if (processedCounties.length > 0) {
+          console.log('Sample county data:', processedCounties[0]);
+          console.log('Color scales loaded:', Object.keys(colorScalesData));
+        }
         
       } catch (error) {
         console.error('Error loading data:', error);
