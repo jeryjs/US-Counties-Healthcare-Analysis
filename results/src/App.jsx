@@ -57,13 +57,13 @@ const App = () => {
           insightsResponse,
           clustersResponse
         ] = await Promise.all([
-          fetch('/comprehensive_county_data.json'),
-          fetch('/detailed_state_analysis.json'), 
-          fetch('/color_scales.json'),
-          fetch('/policy_recommendations.json'),
-          fetch('/projection_scenarios.json'),
-          fetch('/county_insights.json'),
-          fetch('/cluster_definitions.json')
+          fetch('./comprehensive_county_data.json'),
+          fetch('./detailed_state_analysis.json'), 
+          fetch('./color_scales.json'),
+          fetch('./policy_recommendations.json'),
+          fetch('./projection_scenarios.json'),
+          fetch('./county_insights.json'),
+          fetch('./cluster_definitions.json')
         ]);
 
         const [
