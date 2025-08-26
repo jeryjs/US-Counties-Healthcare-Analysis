@@ -1,0 +1,50 @@
+{
+  "insurance_model": {
+    "features": [
+      "Population",
+      "Median_Income",
+      "Education_Rate",
+      "Poverty_Rate",
+      "Owner_Occupied",
+      "Commute_Minutes"
+    ],
+    "mae": 0.52,
+    "r2": 0.105
+  },
+  "poverty_model": {
+    "features": [
+      "Population",
+      "Median_Income",
+      "Education_Rate",
+      "Owner_Occupied",
+      "Commute_Minutes",
+      "No_Vehicle_Rate",
+      "Disability_Rate"
+    ],
+    "mae": 2.23,
+    "r2": 0.819
+  },
+  "education_model": {
+    "features": [
+      "Population",
+      "Median_Income",
+      "Poverty_Rate",
+      "Owner_Occupied",
+      "Commute_Minutes"
+    ],
+    "mae": 2.2,
+    "r2": 0.531
+  },
+  "income_model": {
+    "features": [
+      "Population",
+      "Education_Rate",
+      "Poverty_Rate",
+      "Owner_Occupied",
+      "Commute_Minutes",
+      "No_Vehicle_Rate"
+    ],
+    "mae": 5727.0,
+    "r2": 0.82
+  }
+}
