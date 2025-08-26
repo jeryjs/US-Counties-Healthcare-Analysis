@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Settings, Filter, Eye, Users, TrendingUp, 
+import {
+  Settings, Filter, Eye, Users, TrendingUp,
   BarChart3, Map, Layers, Search, X, ChevronDown,
   Globe, Target, Activity, Zap
 } from 'lucide-react';
 
-const AdvancedControls = ({ 
-  visualMode, 
+const AdvancedControls = ({
+  visualMode,
   setVisualMode,
   filterSettings,
   setFilterSettings,
@@ -15,11 +15,12 @@ const AdvancedControls = ({
   setClusterMode,
   onAnalysisChange,
   counties,
-  colorScales
+  colorScales,
+  onCountySelect
 }) => {
   const [activePanel, setActivePanel] = useState('visual');
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Get unique values for filters
   const regions = useMemo(() => {
     if (!counties) return [];
@@ -115,14 +116,14 @@ const AdvancedControls = ({
     { id: 'filters', name: 'Filters', icon: Filter },
     { id: 'clusters', name: 'Clusters', icon: Layers },
     { id: 'analysis', name: 'Analysis', icon: BarChart3 },
-    { id: 'search', name: 'Search', icon: Search }
+    // { id: 'search', name: 'Search', icon: Search }
   ];
 
   // Search filtered counties
   const searchResults = useMemo(() => {
     if (!searchTerm || !counties) return [];
     return counties
-      .filter(c => 
+      .filter(c =>
         c.County.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.State.toLowerCase().includes(searchTerm.toLowerCase())
       )
@@ -148,19 +149,26 @@ const AdvancedControls = ({
               </h2>
               <p className="text-xs text-gray-400">Deep insights & visualizations</p>
             </div>
+            <button
+              onClick={() => setActivePanel('search')}
+              className={`ml-auto p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors ${activePanel === 'search' ? 'bg-neon-blue text-white shadow-lg' : ''}`}
+              title="Search counties"
+            >
+              <Search className="w-4 h-4" />
+              <span className="sr-only">Search</span>
+            </button>
           </div>
-          
+
           {/* Panel tabs */}
           <div className="flex gap-1 bg-black/30 rounded-lg p-1">
             {panels.map((panel) => (
               <button
                 key={panel.id}
                 onClick={() => setActivePanel(panel.id)}
-                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md text-xs font-medium transition-all ${
-                  activePanel === panel.id
-                    ? 'bg-neon-blue text-white shadow-lg'
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
-                }`}
+                className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md text-xs font-medium transition-all ${activePanel === panel.id
+                  ? 'bg-neon-blue text-white shadow-lg'
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+                  }`}
               >
                 <panel.icon className="w-3 h-3" />
                 <span className="hidden sm:block">{panel.name}</span>
@@ -170,7 +178,7 @@ const AdvancedControls = ({
         </div>
 
         {/* Panel content */}
-        <div className="p-4 max-h-96 overflow-y-auto custom-scrollbar">
+        <div className="p-4 overflow-y-auto custom-scrollbar">
           <AnimatePresence mode="wait">
             {activePanel === 'visual' && (
               <motion.div
@@ -387,7 +395,7 @@ const AdvancedControls = ({
                 className="space-y-4"
               >
                 <h3 className="text-sm font-semibold text-white mb-3">County Search</h3>
-                
+
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
