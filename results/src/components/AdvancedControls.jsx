@@ -331,18 +331,29 @@ const AdvancedControls = ({
                     <label className="flex items-start gap-3">
                       <input
                         type="checkbox"
-                        checked={!filterSettings.clusters.length || filterSettings.clusters.includes(cluster.id)}
+                        checked={filterSettings.clusters.length === 0 || filterSettings.clusters.includes(cluster.id)}
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setFilterSettings(prev => ({
-                              ...prev,
-                              clusters: prev.clusters.length === clusters.length - 1 ? [] : [...prev.clusters, cluster.id]
-                            }));
+                            // If checking a box, either add it to the array or clear array if all are selected
+                            setFilterSettings(prev => {
+                              const newClusters = prev.clusters.length === 0 
+                                ? [cluster.id] // If showing all, now show only this one
+                                : [...prev.clusters, cluster.id]; // Add to existing selection
+                              
+                              // If all clusters are now selected, clear the array (show all)
+                              return {...prev, clusters: newClusters.length === clusters.length ? [] : newClusters};
+                            });
                           } else {
-                            setFilterSettings(prev => ({
-                              ...prev,
-                              clusters: prev.clusters.filter(c => c !== cluster.id)
-                            }));
+                            // If unchecking a box, remove it from selection
+                            setFilterSettings(prev => {
+                              if (prev.clusters.length === 0) {
+                                // If showing all, now show all except this one
+                                return {...prev, clusters: clusters.map(c => c.id).filter(id => id !== cluster.id)};
+                              } else {
+                                // Remove from existing selection
+                                return {...prev, clusters: prev.clusters.filter(c => c !== cluster.id)};
+                              }
+                            });
                           }
                         }}
                         className="mt-1 w-4 h-4 text-neon-blue bg-gray-800 border-gray-600 rounded focus:ring-neon-blue focus:ring-2"
