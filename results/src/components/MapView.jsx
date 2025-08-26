@@ -21,6 +21,18 @@ const MapView = ({
 }) => {
   const [mapReady, setMapReady] = useState(false);
 
+  // Set a timeout to force mapReady if it doesn't load
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!mapReady) {
+        console.log('Forcing map ready after timeout');
+        setMapReady(true);
+      }
+    }, 3000);
+    
+    return () => clearTimeout(timeout);
+  }, [mapReady]);
+
   // Filter counties based on current filter settings
   const filteredCounties = useMemo(() => {
     if (!counties) return [];
@@ -55,25 +67,26 @@ const MapView = ({
     let value;
     switch (visualMode) {
       case 'healthcare_access':
-        value = county.Healthcare_Access;
+        value = county.Healthcare_Access || 50;
         break;
       case 'opportunity':
-        value = county.Opportunity_Score;
+        value = county.Opportunity_Score || 50;
         break;
       case 'vulnerability':
-        value = county.Vulnerability_Index;
+        value = county.Vulnerability_Index || 50;
         break;
       case 'population':
-        value = county.Population;
-        break;
+        value = Math.log10(county.Population || 10000);
+        return value > 6 ? '#ff0000' : value > 5 ? '#ff7700' : value > 4 ? '#ffff00' : '#00ff00';
       case 'cluster':
         return clusterMode.colors[county.Cluster_7] || '#666';
       default:
-        value = county.Healthcare_Access;
+        value = county.Healthcare_Access || 50;
     }
 
-    // Use gradient color scale
-    return interpolateColor(colorScale, value);
+    // Use gradient color scale or fallback
+    const color = interpolateColor(colorScale, value);
+    return color || '#00f5ff'; // Always return a valid color
   };
 
   // Get radius based on population and visual mode
@@ -101,7 +114,7 @@ const MapView = ({
         scrollWheelZoom={true}
         doubleClickZoom={true}
         attributionControl={false}
-        whenCreated={() => setMapReady(true)}
+        whenReady={() => setMapReady(true)}
       >
         {/* Dark tile layer focused on US */}
         <TileLayer
@@ -117,18 +130,53 @@ const MapView = ({
           bounds={US_BOUNDS}
         />
         
-        {/* County markers */}
-        {mapReady && filteredCounties.map((county) => (
+        {/* County markers - always show some counties for debugging */}
+        {filteredCounties.length > 0 && filteredCounties.map((county) => {
+          const color = getCountyColor(county);
+          const radius = getCountyRadius(county);
+          
+          return (
+            <CountyMarker
+              key={county.FIPS}
+              county={county}
+              isSelected={selectedCounty?.FIPS === county.FIPS}
+              onClick={onCountySelect}
+              color={color}
+              radius={radius}
+              visualMode={visualMode}
+            />
+          );
+        })}
+        
+        {/* Fallback: If no counties are filtered, show all with basic styling */}
+        {filteredCounties.length === 0 && counties.length > 0 && counties.slice(0, 100).map((county) => (
           <CountyMarker
             key={county.FIPS}
             county={county}
             isSelected={selectedCounty?.FIPS === county.FIPS}
             onClick={onCountySelect}
-            color={getCountyColor(county)}
-            radius={getCountyRadius(county)}
+            color="#00f5ff"
+            radius={6}
             visualMode={visualMode}
           />
         ))}
+        
+        {/* Debug info */}
+        {mapReady && (
+          <div style={{ 
+            position: 'absolute', 
+            top: 10, 
+            left: 10, 
+            background: 'rgba(0,0,0,0.8)', 
+            color: 'white', 
+            padding: '5px',
+            fontSize: '12px',
+            zIndex: 1000,
+            borderRadius: '4px'
+          }}>
+            Counties: {filteredCounties.length} | Mode: {visualMode}
+          </div>
+        )}
       </MapContainer>
       
       {/* Map loading overlay */}
@@ -147,9 +195,20 @@ const MapView = ({
 
 // Helper function to interpolate colors based on value and scale
 const interpolateColor = (colorScale, value) => {
-  if (!colorScale || !colorScale.colors || !colorScale.domain) return '#666';
+  if (!colorScale || !colorScale.colors || !colorScale.domain) {
+    // Fallback color based on value
+    if (value > 80) return '#00ff41';
+    if (value > 60) return '#00f5ff';
+    if (value > 40) return '#ffff00';
+    if (value > 20) return '#ff7700';
+    return '#ff0000';
+  }
   
   const { colors, domain } = colorScale;
+  
+  // Handle edge cases
+  if (value <= domain[0]) return colors[0];
+  if (value >= domain[domain.length - 1]) return colors[colors.length - 1];
   
   // Find the position in the domain
   let index = 0;
@@ -160,6 +219,9 @@ const interpolateColor = (colorScale, value) => {
     }
   }
   
+  // Ensure we have valid colors to interpolate between
+  if (!colors[index] || !colors[index + 1]) return colors[index] || '#666';
+  
   // Simple interpolation between two colors
   const ratio = (value - domain[index]) / (domain[index + 1] - domain[index]);
   return interpolateHexColors(colors[index], colors[index + 1], ratio);
@@ -169,25 +231,39 @@ const interpolateColor = (colorScale, value) => {
 const interpolateHexColors = (color1, color2, ratio) => {
   if (!color1 || !color2) return color1 || color2 || '#666';
   
+  // Clamp ratio between 0 and 1
+  ratio = Math.max(0, Math.min(1, ratio));
+  
   const hex2rgb = (hex) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+    // Handle various hex formats
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+      hex = hex.split('').map(h => h + h).join('');
+    }
+    const r = parseInt(hex.substr(0, 2), 16) || 0;
+    const g = parseInt(hex.substr(2, 2), 16) || 0;
+    const b = parseInt(hex.substr(4, 2), 16) || 0;
     return [r, g, b];
   };
   
   const rgb2hex = (r, g, b) => {
-    return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+    const toHex = (n) => Math.round(Math.max(0, Math.min(255, n))).toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   };
   
-  const [r1, g1, b1] = hex2rgb(color1);
-  const [r2, g2, b2] = hex2rgb(color2);
-  
-  const r = r1 + (r2 - r1) * ratio;
-  const g = g1 + (g2 - g1) * ratio;
-  const b = b1 + (b2 - b1) * ratio;
-  
-  return rgb2hex(r, g, b);
+  try {
+    const [r1, g1, b1] = hex2rgb(color1);
+    const [r2, g2, b2] = hex2rgb(color2);
+    
+    const r = r1 + (r2 - r1) * ratio;
+    const g = g1 + (g2 - g1) * ratio;
+    const b = b1 + (b2 - b1) * ratio;
+    
+    return rgb2hex(r, g, b);
+  } catch (error) {
+    console.warn('Color interpolation error:', error, color1, color2);
+    return color1;
+  }
 };
 
 export default MapView;
