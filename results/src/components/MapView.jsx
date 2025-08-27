@@ -50,6 +50,42 @@ const MapView = ({
       if (county.Healthcare_Access < filterSettings.healthcareRange[0] || 
           county.Healthcare_Access > filterSettings.healthcareRange[1]) return false;
       
+      // Income range filter
+      if (county.Median_Income < filterSettings.incomeRange[0] || 
+          county.Median_Income > filterSettings.incomeRange[1]) return false;
+      
+      // Poverty range filter
+      if (county.Poverty_Rate < filterSettings.povertyRange[0] || 
+          county.Poverty_Rate > filterSettings.povertyRange[1]) return false;
+      
+      // Disability range filter
+      if (county.Disability_Rate < filterSettings.disabilityRange[0] || 
+          county.Disability_Rate > filterSettings.disabilityRange[1]) return false;
+      
+      // Education range filter
+      if (county.Education_Rate < filterSettings.educationRange[0] || 
+          county.Education_Rate > filterSettings.educationRange[1]) return false;
+      
+      // Insurance range filter
+      if (county.Insurance_Rate < filterSettings.insuranceRange[0] || 
+          county.Insurance_Rate > filterSettings.insuranceRange[1]) return false;
+      
+      // Vulnerability range filter
+      if (county.Vulnerability_Index < filterSettings.vulnerabilityRange[0] || 
+          county.Vulnerability_Index > filterSettings.vulnerabilityRange[1]) return false;
+      
+      // Opportunity range filter
+      if (county.Opportunity_Score < filterSettings.opportunityRange[0] || 
+          county.Opportunity_Score > filterSettings.opportunityRange[1]) return false;
+      
+      // Resilience range filter
+      if (county.Resilience_Score < filterSettings.resilienceRange[0] || 
+          county.Resilience_Score > filterSettings.resilienceRange[1]) return false;
+      
+      // Broadband range filter
+      if (county.Broadband_Rate < filterSettings.broadbandRange[0] || 
+          county.Broadband_Rate > filterSettings.broadbandRange[1]) return false;
+      
       // Cluster filter
       if (filterSettings.clusters && filterSettings.clusters.length > 0 &&
           !filterSettings.clusters.includes(county.Cluster_7)) return false;
@@ -130,7 +166,7 @@ const MapView = ({
           bounds={US_BOUNDS}
         />
         
-        {/* County markers - always show some counties for debugging */}
+        {/* County markers */}
         {filteredCounties.length > 0 && filteredCounties.map((county) => {
           const color = getCountyColor(county);
           const radius = getCountyRadius(county);
@@ -147,36 +183,6 @@ const MapView = ({
             />
           );
         })}
-        
-        {/* Fallback: If no counties are filtered, show all with basic styling */}
-        {filteredCounties.length === 0 && counties.length > 0 && counties.slice(0, 100).map((county) => (
-          <CountyMarker
-            key={county.FIPS}
-            county={county}
-            isSelected={selectedCounty?.FIPS === county.FIPS}
-            onClick={onCountySelect}
-            color="#00f5ff"
-            radius={6}
-            visualMode={visualMode}
-          />
-        ))}
-        
-        {/* Debug info */}
-        {mapReady && (
-          <div style={{ 
-            position: 'absolute', 
-            top: 10, 
-            left: 10, 
-            background: 'rgba(0,0,0,0.8)', 
-            color: 'white', 
-            padding: '5px',
-            fontSize: '12px',
-            zIndex: 1000,
-            borderRadius: '4px'
-          }}>
-            Counties: {filteredCounties.length} | Mode: {visualMode}
-          </div>
-        )}
       </MapContainer>
       
       {/* Map loading overlay */}

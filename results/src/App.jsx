@@ -31,7 +31,17 @@ const App = () => {
     region: null,
     populationRange: [0, 10000000],
     healthcareRange: [0, 100],
-    clusters: []
+    incomeRange: [0, 200000],
+    povertyRange: [0, 100],
+    disabilityRange: [0, 100],
+    educationRange: [0, 100],
+    insuranceRange: [0, 1],
+    vulnerabilityRange: [0, 100],
+    opportunityRange: [0, 100],
+    resilienceRange: [0, 100],
+    clusters: [],
+    urbanRural: null,
+    broadbandRange: [0, 500000]
   });
 
   const [clusterMode, setClusterMode] = useState({
@@ -160,6 +170,18 @@ const App = () => {
     setAnalysisMode(mode);
     // Could trigger additional data loading or processing here
   };
+
+  // Compute filteredCounties for Quick Stats overlay
+  const filteredCounties = useMemo(() => {
+    return counties.filter(county => {
+      if (county.Population < filterSettings.populationRange[0] ||
+          county.Population > filterSettings.populationRange[1]) return false;
+      if (county.Healthcare_Access < filterSettings.healthcareRange[0] ||
+          county.Healthcare_Access > filterSettings.healthcareRange[1]) return false;
+      // Add more filters as needed based on filterSettings
+      return true;
+    });
+  }, [counties, filterSettings]);
 
   if (isLoading) {
     return (
@@ -316,19 +338,19 @@ const App = () => {
             </h3>
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-gray-400">Total Counties:</span>
-                <span className="text-white font-mono">{counties.length.toLocaleString()}</span>
+                <span className="text-gray-400">Showing Counties:</span>
+                <span className="text-white font-mono">{filteredCounties.length.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Avg Healthcare Score:</span>
                 <span className="text-neon-blue font-mono">
-                  {(counties.reduce((sum, c) => sum + c.Healthcare_Access, 0) / counties.length).toFixed(1)}
+                  {(filteredCounties.reduce((sum, c) => sum + c.Healthcare_Access, 0) / filteredCounties.length).toFixed(1)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Total Population:</span>
                 <span className="text-neon-green font-mono">
-                  {(counties.reduce((sum, c) => sum + c.Population, 0) / 1000000).toFixed(0)}M
+                  {(filteredCounties.reduce((sum, c) => sum + c.Population, 0) / 1000000).toFixed(0)}M
                 </span>
               </div>
               {/* {selectedCounty && (

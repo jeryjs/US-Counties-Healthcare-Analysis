@@ -130,6 +130,15 @@ const AdvancedControls = ({
       .slice(0, 10);
   }, [searchTerm, counties]);
 
+  // Helper for quick filters
+  const setQuickFilter = (filterObj) => {
+    document.getElementsByClassName('reset-btn')[0].click();
+    setFilterSettings(prev => ({
+      ...prev,
+      ...filterObj
+    }));
+  };
+
   return (
     <motion.div
       initial={{ x: -400, opacity: 0 }}
@@ -216,104 +225,480 @@ const AdvancedControls = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="space-y-4"
+                className="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar"
               >
-                <h3 className="text-sm font-semibold text-white mb-3">Data Filters</h3>
-
-                {/* Region filter */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-2">
-                    Region
-                  </label>
-                  <select
-                    value={filterSettings.region || 'all'}
-                    onChange={(e) => setFilterSettings(prev => ({
-                      ...prev,
-                      region: e.target.value === 'all' ? null : e.target.value
-                    }))}
-                    className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:border-neon-blue focus:outline-none"
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-white">Data Filters</h3>
+                  <button
+                    onClick={() => setFilterSettings({
+                      region: null,
+                      populationRange: [0, 10000000],
+                      healthcareRange: [0, 100],
+                      incomeRange: [0, 200000],
+                      povertyRange: [0, 100],
+                      disabilityRange: [0, 100],
+                      educationRange: [0, 100],
+                      insuranceRange: [0, 1],
+                      vulnerabilityRange: [0, 100],
+                      opportunityRange: [0, 100],
+                      resilienceRange: [0, 100],
+                      clusters: [],
+                      urbanRural: null,
+                      broadbandRange: [0, 500000]
+                    })}
+                    className="reset-btn text-xs px-2 py-1 mt-[-50px] right-[20px] absolute bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
                   >
-                    <option value="all">All Regions</option>
-                    {regions.map(region => (
-                      <option key={region} value={region}>{region}</option>
-                    ))}
-                  </select>
+                    Reset All
+                  </button>
                 </div>
 
-                {/* Population range */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-2">
-                    Population Range: {filterSettings.populationRange[0].toLocaleString()} - {filterSettings.populationRange[1].toLocaleString()}
-                  </label>
-                  <div className="space-y-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="1000000"
-                      value={filterSettings.populationRange[0]}
+                {/* Geographic Filters */}
+                <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
+                  <h4 className="text-xs font-semibold text-neon-blue mb-2 flex items-center gap-1">
+                    <Globe className="w-3 h-3" />
+                    Geographic
+                  </h4>
+
+                  {/* Region filter */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Region
+                    </label>
+                    <select
+                      value={filterSettings.region || 'all'}
                       onChange={(e) => setFilterSettings(prev => ({
                         ...prev,
-                        populationRange: [parseInt(e.target.value), prev.populationRange[1]]
+                        region: e.target.value === 'all' ? null : e.target.value
                       }))}
-                      className="w-full cyber-slider"
-                    />
-                    <input
-                      type="range"
-                      min="1000000"
-                      max="10000000"
-                      value={filterSettings.populationRange[1]}
-                      onChange={(e) => setFilterSettings(prev => ({
-                        ...prev,
-                        populationRange: [prev.populationRange[0], parseInt(e.target.value)]
-                      }))}
-                      className="w-full cyber-slider"
-                    />
+                      className="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-xs text-white focus:border-neon-blue focus:outline-none"
+                    >
+                      <option value="all">All Regions</option>
+                      {regions.map(region => (
+                        <option key={region} value={region}>{region}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Population range */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Population: {filterSettings.populationRange[0].toLocaleString()} - {filterSettings.populationRange[1].toLocaleString()}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="500000"
+                        step="10000"
+                        value={filterSettings.populationRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          populationRange: [parseInt(e.target.value), prev.populationRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="50000"
+                        max="10000000"
+                        step="100000"
+                        value={filterSettings.populationRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          populationRange: [prev.populationRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Healthcare access range */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-2">
-                    Healthcare Access: {filterSettings.healthcareRange[0]} - {filterSettings.healthcareRange[1]}
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={filterSettings.healthcareRange[0]}
-                      onChange={(e) => setFilterSettings(prev => ({
-                        ...prev,
-                        healthcareRange: [parseInt(e.target.value), prev.healthcareRange[1]]
-                      }))}
-                      className="flex-1 cyber-slider"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={filterSettings.healthcareRange[1]}
-                      onChange={(e) => setFilterSettings(prev => ({
-                        ...prev,
-                        healthcareRange: [prev.healthcareRange[0], parseInt(e.target.value)]
-                      }))}
-                      className="flex-1 cyber-slider"
-                    />
+                {/* Healthcare Metrics */}
+                <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
+                  <h4 className="text-xs font-semibold text-neon-green mb-2 flex items-center gap-1">
+                    <Activity className="w-3 h-3" />
+                    Healthcare Metrics
+                  </h4>
+
+                  {/* Healthcare Access */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Healthcare Access: {filterSettings.healthcareRange[0]} - {filterSettings.healthcareRange[1]}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.healthcareRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          healthcareRange: [parseInt(e.target.value), prev.healthcareRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.healthcareRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          healthcareRange: [prev.healthcareRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Insurance Coverage */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Insurance Rate: {(filterSettings.insuranceRange[0] * 100).toFixed(0)}% - {(filterSettings.insuranceRange[1] * 100).toFixed(0)}%
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={filterSettings.insuranceRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          insuranceRange: [parseFloat(e.target.value), prev.insuranceRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={filterSettings.insuranceRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          insuranceRange: [prev.insuranceRange[0], parseFloat(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Opportunity Score */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Opportunity Score: {filterSettings.opportunityRange[0]} - {filterSettings.opportunityRange[1]}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.opportunityRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          opportunityRange: [parseInt(e.target.value), prev.opportunityRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.opportunityRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          opportunityRange: [prev.opportunityRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Vulnerability Index */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Vulnerability Index: {filterSettings.vulnerabilityRange[0]} - {filterSettings.vulnerabilityRange[1]}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.vulnerabilityRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          vulnerabilityRange: [parseInt(e.target.value), prev.vulnerabilityRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.vulnerabilityRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          vulnerabilityRange: [prev.vulnerabilityRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Reset filters */}
-                <button
-                  onClick={() => setFilterSettings({
-                    region: null,
-                    populationRange: [0, 10000000],
-                    healthcareRange: [0, 100],
-                    clusters: []
-                  })}
-                  className="w-full py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  Reset All Filters
-                </button>
+                {/* Socioeconomic Factors */}
+                <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
+                  <h4 className="text-xs font-semibold text-neon-pink mb-2 flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3" />
+                    Socioeconomic
+                  </h4>
+
+                  {/* Median Income */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Median Income: ${filterSettings.incomeRange[0].toLocaleString()} - ${filterSettings.incomeRange[1].toLocaleString()}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100000"
+                        step="1000"
+                        value={filterSettings.incomeRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          incomeRange: [parseInt(e.target.value), prev.incomeRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="100000"
+                        max="200000"
+                        step="5000"
+                        value={filterSettings.incomeRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          incomeRange: [prev.incomeRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Poverty Rate */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Poverty Rate: {filterSettings.povertyRange[0]}% - {filterSettings.povertyRange[1]}%
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.povertyRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          povertyRange: [parseInt(e.target.value), prev.povertyRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.povertyRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          povertyRange: [prev.povertyRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Education Rate */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Education Rate: {filterSettings.educationRange[0]}% - {filterSettings.educationRange[1]}%
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.educationRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          educationRange: [parseInt(e.target.value), prev.educationRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.educationRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          educationRange: [prev.educationRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Barrier & Access Factors */}
+                <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
+                  <h4 className="text-xs font-semibold text-yellow-400 mb-2 flex items-center gap-1">
+                    <Target className="w-3 h-3" />
+                    Barriers & Access
+                  </h4>
+
+                  {/* Disability Rate */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Disability Rate: {filterSettings.disabilityRange[0]}% - {filterSettings.disabilityRange[1]}%
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.disabilityRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          disabilityRange: [parseInt(e.target.value), prev.disabilityRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.disabilityRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          disabilityRange: [prev.disabilityRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Broadband Access */}
+                  <div className="mb-3">
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Broadband Access: {filterSettings.broadbandRange[0].toLocaleString()} - {filterSettings.broadbandRange[1].toLocaleString()}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="50000"
+                        step="1000"
+                        value={filterSettings.broadbandRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          broadbandRange: [parseInt(e.target.value), prev.broadbandRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="50000"
+                        max="500000"
+                        step="10000"
+                        value={filterSettings.broadbandRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          broadbandRange: [prev.broadbandRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Resilience Score */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1">
+                      Resilience Score: {filterSettings.resilienceRange[0]} - {filterSettings.resilienceRange[1]}
+                    </label>
+                    <div className="space-y-1">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.resilienceRange[0]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          resilienceRange: [parseInt(e.target.value), prev.resilienceRange[1]]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={filterSettings.resilienceRange[1]}
+                        onChange={(e) => setFilterSettings(prev => ({
+                          ...prev,
+                          resilienceRange: [prev.resilienceRange[0], parseInt(e.target.value)]
+                        }))}
+                        className="w-full cyber-slider"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Filters */}
+                <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
+                  <h4 className="text-xs font-semibold text-purple-400 mb-2 flex items-center gap-1">
+                    <Zap className="w-3 h-3" />
+                    Quick Filters
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setQuickFilter({ healthcareRange: [0, 40] })}
+                      className="px-2 py-1 bg-red-900/30 border border-red-600/50 rounded text-xs text-red-200 hover:bg-red-900/50 transition-colors"
+                    >
+                      Low Access
+                    </button>
+                    <button
+                      onClick={() => setQuickFilter({ healthcareRange: [75, 100] })}
+                      className="px-2 py-1 bg-green-900/30 border border-green-600/50 rounded text-xs text-green-200 hover:bg-green-900/50 transition-colors"
+                    >
+                      High Access
+                    </button>
+                    <button
+                      onClick={() => setQuickFilter({ populationRange: [0, 50000] })}
+                      className="px-2 py-1 bg-blue-900/30 border border-blue-600/50 rounded text-xs text-blue-200 hover:bg-blue-900/50 transition-colors"
+                    >
+                      Rural Areas
+                    </button>
+                    <button
+                      onClick={() => setQuickFilter({ populationRange: [1000000, 10000000] })}
+                      className="px-2 py-1 bg-purple-900/30 border border-purple-600/50 rounded text-xs text-purple-200 hover:bg-purple-900/50 transition-colors"
+                    >
+                      Metro Areas
+                    </button>
+                    <button
+                      onClick={() => setQuickFilter({ povertyRange: [30, 100] })}
+                      className="px-2 py-1 bg-orange-900/30 border border-orange-600/50 rounded text-xs text-orange-200 hover:bg-orange-900/50 transition-colors"
+                    >
+                      High Poverty
+                    </button>
+                    <button
+                      onClick={() => setQuickFilter({ opportunityRange: [60, 100] })}
+                      className="px-2 py-1 bg-cyan-900/30 border border-cyan-600/50 rounded text-xs text-cyan-200 hover:bg-cyan-900/50 transition-colors"
+                    >
+                      High Opportunity
+                    </button>
+                  </div>
+                </div>
               </motion.div>
             )}
 
@@ -336,22 +721,22 @@ const AdvancedControls = ({
                           if (e.target.checked) {
                             // If checking a box, either add it to the array or clear array if all are selected
                             setFilterSettings(prev => {
-                              const newClusters = prev.clusters.length === 0 
+                              const newClusters = prev.clusters.length === 0
                                 ? [cluster.id] // If showing all, now show only this one
                                 : [...prev.clusters, cluster.id]; // Add to existing selection
-                              
+
                               // If all clusters are now selected, clear the array (show all)
-                              return {...prev, clusters: newClusters.length === clusters.length ? [] : newClusters};
+                              return { ...prev, clusters: newClusters.length === clusters.length ? [] : newClusters };
                             });
                           } else {
                             // If unchecking a box, remove it from selection
                             setFilterSettings(prev => {
                               if (prev.clusters.length === 0) {
                                 // If showing all, now show all except this one
-                                return {...prev, clusters: clusters.map(c => c.id).filter(id => id !== cluster.id)};
+                                return { ...prev, clusters: clusters.map(c => c.id).filter(id => id !== cluster.id) };
                               } else {
                                 // Remove from existing selection
-                                return {...prev, clusters: prev.clusters.filter(c => c !== cluster.id)};
+                                return { ...prev, clusters: prev.clusters.filter(c => c !== cluster.id) };
                               }
                             });
                           }
