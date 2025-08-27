@@ -31,9 +31,16 @@ jobs:
         pnpm install
         
     - name: Build
+      env:
+        VITE_GROQ_API_KEY: ${{ secrets.VITE_GROQ_API_KEY }}
       run: |
         cd results
         pnpm run build 
+        
+    - name: Inject API Key into built HTML
+      run: |
+        cd results/dist
+        sed -i 's|<!-- Runtime API key injection point -->|<script>window.GROQ_API_KEY = "${{ secrets.VITE_GROQ_API_KEY }}";</script>|' index.html
         
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
