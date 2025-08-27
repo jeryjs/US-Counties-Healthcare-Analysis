@@ -3,9 +3,10 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Get API key from runtime injection or environment
 const getApiKey = () => {
+  // localStorage for user-entered keys  
   // Runtime injection for deployment (window.GROQ_API_KEY)
   // or environment variables for local development
-  return window.GROQ_API_KEY || import.meta.env.VITE_GROQ_API_KEY;
+  return localStorage.getItem('groq_api_key') || window.GROQ_API_KEY || import.meta.env.VITE_GROQ_API_KEY;
 };
 
 // Generate cache key based on county data dependencies
@@ -53,14 +54,14 @@ const setCache = (key, data) => {
 const getCachedRecommendation = (key) => {
   const cache = getCache();
   const cached = cache[key];
-  
+
   if (!cached) return null;
   if (Date.now() - cached.timestamp > CACHE_EXPIRY) {
     delete cache[key];
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
     return null;
   }
-  
+
   return cached.data;
 };
 
@@ -76,7 +77,7 @@ export const generateAIRecommendations = async (county, filterSettings, similarC
 
   const cacheKey = generateCacheKey(county, filterSettings);
   const cached = getCachedRecommendation(cacheKey);
-  
+
   if (cached) {
     return { recommendations: cached, cached: true };
   }
@@ -193,7 +194,7 @@ Focus on specific, implementable solutions based on the county's actual needs an
 // Fallback recommendations when AI fails
 const getFallbackRecommendations = (county) => {
   const recommendations = [];
-  
+
   if (county.Healthcare_Access < 50) {
     recommendations.push({
       priority: 'High',
@@ -249,6 +250,18 @@ const getFallbackRecommendations = (county) => {
 };
 
 // Clear cache function for manual cache management
-export const clearAICache = () => {
+export const clearAICache = (FIPS) => {
+  if (FIPS) {
+    // Clear specific county cache entries
+    const cache = getCache();
+    Object.keys(cache).forEach(key => {
+      if (key.includes(FIPS)) {
+        delete cache[key];
+      }
+    });
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    return;
+  }
+  // Clear entire cache
   localStorage.removeItem(CACHE_KEY);
 };

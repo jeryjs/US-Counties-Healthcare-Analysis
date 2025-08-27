@@ -61,7 +61,7 @@ const AnalysisPanel = ({
     if (!selectedCounty) return;
     
     // Clear cache for this county and refresh
-    clearAICache();
+    clearAICache(selectedCounty.FIPS);
     setAiRecommendations(null);
     
     // Trigger re-fetch
@@ -385,6 +385,38 @@ const AnalysisPanel = ({
               <span className="font-medium">AI Service Unavailable</span>
             </div>
             <p className="text-sm text-red-300 mb-3">{aiError}</p>
+            
+            {aiError.includes('API key') && (
+              <div className="mb-4 p-3 bg-gray-800/50 rounded border border-gray-600">
+                <label className="block text-xs font-medium text-gray-300 mb-2">
+                  Enter Groq API Key:
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    className="flex-1 bg-gray-900 border border-gray-600 rounded px-2 py-1 text-xs text-white focus:border-neon-blue focus:outline-none"
+                  />
+                  <button
+                    onClick={(e) => {
+                      const input = e.target.parentElement.querySelector('input');
+                      if (input.value.trim()) {
+                        localStorage.setItem('groq_api_key', input.value.trim());
+                        window.GROQ_API_KEY = input.value.trim();
+                        refreshAIRecommendations();
+                      }
+                    }}
+                    className="px-3 py-1 bg-neon-blue hover:bg-neon-blue/80 text-white text-xs rounded transition-colors"
+                  >
+                    Save
+                  </button>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  Key will be saved locally. Get one from <a href="https://console.groq.com/" target="_blank" rel="noopener" className="text-neon-blue hover:underline">console.groq.com</a>
+                </p>
+              </div>
+            )}
+            
             {aiRecommendations && aiRecommendations.length > 0 && (
               <div>
                 <p className="text-xs text-gray-400 mb-3">Showing fallback recommendations:</p>
