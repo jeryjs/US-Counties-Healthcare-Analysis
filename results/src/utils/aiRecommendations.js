@@ -132,6 +132,7 @@ Provide response as JSON array with 3 recommendations, each having:
 }
 
 Focus on specific, implementable solutions based on the county's actual needs and performance gaps. Use General Knowledge and Common sense to supplement your decisions.`;
+    const models = ['llama-3.1-8b-instant', 'meta-llama/llama-4-maverick-17b-128e-instruct', 'moonshotai/kimi-k2-instruct', 'openai/gpt-oss-20b'];
 
     const response = await fetch(GROQ_API_URL, {
       method: 'POST',
@@ -140,7 +141,7 @@ Focus on specific, implementable solutions based on the county's actual needs an
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: Math.random() > 0.5 ? 'llama-3.1-8b-instant' : 'meta-llama/llama-4-maverick-17b-128e-instruct',
+        model: models[Math.floor(Math.random() * models.length)],
         messages: [
           { role: 'system', content: 'You are a healthcare policy expert providing data-driven recommendations for US counties.' },
           { role: 'user', content: prompt }
