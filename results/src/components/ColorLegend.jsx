@@ -125,14 +125,23 @@ function ColorLegend({ currentColorScale, visualMode, clusterDefinitions, cluste
       calculation: "Machine learning clustering using healthcare, demographic, and geographic variables",
       dataSource: "Multi-variable analysis of Census and healthcare data",
       interpretation: {
-        clusters: "7 distinct clusters represent different county archetypes nationwide",
-        purpose: "Enables comparison with similar counties rather than all 3,222 counties",
-        validation: "Clusters show geographic and demographic coherence"
+        clusters: "7 distinct clusters based on healthcare access patterns and demographics:",
+        details: {
+          "Metro Powerhouses": "501 counties - Major urban centers with excellent access (avg 68.7 score) but high costs",
+          "Suburban Stability": "1,049 counties - Well-resourced suburban communities with good outcomes (avg 46.0 score)", 
+          "Rural Resilience": "146 counties - Small towns with moderate access (avg 44.2 score), strong community ties",
+          "Urban Challenges": "27 counties - Dense cities with high scores (avg 80.6) but mixed outcomes, high inequality",
+          "Healthcare Deserts": "160 counties - Underserved areas with critical access gaps (avg 48.9 score)",
+          "Growth Corridors": "1,337 counties - Rapidly developing areas with emerging needs (avg 51.0 score)",
+          "College Towns": "2 counties - Education-focused communities with unique demographics (avg 42.2 score)"
+        },
+        purpose: "Enables comparison with similar counties rather than all 3,222 counties"
       },
       insights: [
-        "Rural Resilience, Urban Challenges, Growth Corridors are example clusters",
-        "Counties can compare performance vs. similar peers",
-        "Cluster membership helps identify relevant best practices"
+        "Metro Powerhouses (501) and Growth Corridors (1,337) are the largest cluster groups",
+        "Urban Challenges cluster has highest healthcare scores (80.6 avg) despite inequality issues",
+        "Suburban Stability is the most common archetype with 1,049 counties nationwide",
+        "College Towns cluster is smallest with only 2 counties having unique demographics"
       ]
     }
   };
@@ -297,6 +306,21 @@ function ColorLegend({ currentColorScale, visualMode, clusterDefinitions, cluste
                       <div className="flex items-start gap-2">
                         <div className="w-2 h-2 rounded-full bg-red-400 mt-1.5 flex-shrink-0"></div>
                         <span className="text-gray-300"><span className="text-red-400 font-medium">Low:</span> {currentInfo.interpretation.low}</span>
+                      </div>
+                    </div>
+                  ) : currentInfo.interpretation.details ? (
+                    <div className="space-y-2 text-xs">
+                      <p className="text-gray-300 mb-2">{currentInfo.interpretation.clusters}</p>
+                      {Object.entries(currentInfo.interpretation.details).map(([clusterName, description]) => (
+                        <div key={clusterName} className="flex items-start gap-2">
+                          <div className="w-2 h-2 rounded-full bg-neon-blue mt-1.5 flex-shrink-0"></div>
+                          <span className="text-gray-300">
+                            <span className="text-neon-blue font-medium">{clusterName}:</span> {description}
+                          </span>
+                        </div>
+                      ))}
+                      <div className="mt-2 pt-2 border-t border-gray-700">
+                        <span className="text-purple-400 font-medium">Purpose:</span> {currentInfo.interpretation.purpose}
                       </div>
                     </div>
                   ) : (
