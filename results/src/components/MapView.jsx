@@ -127,15 +127,63 @@ const MapView = ({
 
   // Get radius based on population and visual mode
   const getCountyRadius = (county) => {
+    // Base radius calculation with smart scaling
     let baseRadius;
-    if (county.Population > 5000000) baseRadius = 12;
-    else if (county.Population > 1000000) baseRadius = 10;
-    else if (county.Population > 500000) baseRadius = 8;
-    else if (county.Population > 100000) baseRadius = 6;
-    else baseRadius = 4;
+    const population = county.Population || 0;
     
-    // Adjust based on zoom level if needed
-    return baseRadius;
+    // Smart population-based scaling with logarithmic progression
+    if (population > 10000000) baseRadius = 16;      // Mega counties (LA, NYC)
+    else if (population > 5000000) baseRadius = 14;  // Major metros
+    else if (population > 2000000) baseRadius = 12;  // Large metros  
+    else if (population > 1000000) baseRadius = 10;  // Medium metros
+    else if (population > 500000) baseRadius = 8;    // Small metros
+    else if (population > 200000) baseRadius = 7;    // Large counties
+    else if (population > 100000) baseRadius = 6;    // Medium counties
+    else if (population > 50000) baseRadius = 5;     // Small counties
+    else if (population > 20000) baseRadius = 4;     // Rural counties
+    else baseRadius = 3;                             // Very rural
+
+    // Visual mode adjustments for enhanced data storytelling
+    let modeMultiplier = 1;
+    let bonus = 0;
+    
+    switch (visualMode) {
+      case 'vulnerability':
+        // Larger circles for high vulnerability to draw attention
+        modeMultiplier = county.Vulnerability_Index > 70 ? 1.3 : county.Vulnerability_Index > 50 ? 1.1 : 0.9;
+        break;
+        
+      case 'opportunity':
+        // Larger circles for high opportunity areas
+        modeMultiplier = county.Opportunity_Score > 70 ? 1.2 : county.Opportunity_Score < 30 ? 0.8 : 1;
+        break;
+        
+      case 'healthcare_access':
+        // Emphasize areas with poor healthcare access
+        modeMultiplier = county.Healthcare_Access < 30 ? 1.4 : county.Healthcare_Access < 50 ? 1.1 : 0.9;
+        break;
+        
+      case 'cluster':
+        // Differentiate cluster importance
+        const clusterSizes = { 1: 1.2, 2: 1.1, 3: 1.0, 4: 0.9, 5: 0.8, 6: 0.9, 7: 1.0 };
+        modeMultiplier = clusterSizes[county.Cluster_7] || 1;
+        break;
+        
+      case 'population':
+        // Population mode gets extra emphasis on size
+        modeMultiplier = 1.5;
+        break;
+    }
+
+    // Selection bonus - make selected county stand out significantly
+    if (selectedCounty?.FIPS === county.FIPS) {
+      bonus = 4;
+    }
+
+    // Smart minimum/maximum constraints with context awareness
+    const finalRadius = Math.max(2, Math.min(20, baseRadius * modeMultiplier + bonus));
+    
+    return finalRadius;
   };
 
   return (
