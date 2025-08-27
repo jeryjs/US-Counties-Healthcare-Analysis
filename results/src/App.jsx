@@ -6,6 +6,7 @@ import AdvancedControls from './components/AdvancedControls';
 import DetailedAnalysis from './components/DetailedAnalysis';
 import StateComparison from './components/StateComparison';
 import ColorLegend from './components/ColorLegend';
+import AnalysisPanel from './components/AnalysisPanel';
 import 'leaflet/dist/leaflet.css';
 
 const App = () => {
@@ -22,7 +23,8 @@ const App = () => {
   const [selectedCounty, setSelectedCounty] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
   const [visualMode, setVisualMode] = useState('healthcare_access');
-  const [analysisMode, setAnalysisMode] = useState('overview');
+  const [analysisMode, setAnalysisMode] = useState(null);
+  const [showAnalysisPanel, setShowAnalysisPanel] = useState(false);
   const [showStateComparison, setShowStateComparison] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -168,7 +170,7 @@ const App = () => {
   // Handle analysis mode change
   const handleAnalysisChange = (mode) => {
     setAnalysisMode(mode);
-    // Could trigger additional data loading or processing here
+    setShowAnalysisPanel(true);
   };
 
   // Compute filteredCounties for Quick Stats overlay
@@ -367,6 +369,25 @@ const App = () => {
           </div>
         </motion.div>
       )}
+
+      {/* Analysis Panel */}
+      <AnimatePresence>
+        {showAnalysisPanel && analysisMode && (
+          <AnalysisPanel
+            analysisMode={analysisMode}
+            counties={counties}
+            selectedCounty={selectedCounty}
+            recommendations={recommendations}
+            projections={projections}
+            insights={insights}
+            filterSettings={filterSettings}
+            onClose={() => {
+              setShowAnalysisPanel(false);
+              setAnalysisMode(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
