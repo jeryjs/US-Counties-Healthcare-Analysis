@@ -232,19 +232,19 @@ const AdvancedControls = ({
                   <button
                     onClick={() => setFilterSettings({
                       region: null,
-                      populationRange: [0, 10000000],
+                      populationRange: [0, 1e7],
                       healthcareRange: [0, 100],
-                      incomeRange: [0, 200000],
+                      incomeRange: [0, 2e5],
                       povertyRange: [0, 100],
                       disabilityRange: [0, 100],
                       educationRange: [0, 100],
-                      insuranceRange: [0, 1],
+                      insuranceRange: [0, 15],
                       vulnerabilityRange: [0, 100],
                       opportunityRange: [0, 100],
                       resilienceRange: [0, 100],
                       clusters: [],
                       urbanRural: null,
-                      broadbandRange: [0, 500000]
+                      broadbandRange: [0, 35e5]
                     })}
                     className="reset-btn text-xs px-2 py-1 mt-[-50px] right-[20px] absolute bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
                   >
@@ -354,13 +354,13 @@ const AdvancedControls = ({
                   {/* Insurance Coverage */}
                   <div className="mb-3">
                     <label className="block text-xs font-medium text-gray-300 mb-1">
-                      Insurance Rate: {(filterSettings.insuranceRange[0] * 100).toFixed(0)}% - {(filterSettings.insuranceRange[1] * 100).toFixed(0)}%
+                      Insurance Rate: {filterSettings.insuranceRange[0]} - {filterSettings.insuranceRange[1]}
                     </label>
                     <div className="space-y-1">
                       <input
                         type="range"
                         min="0"
-                        max="1"
+                        max="5"
                         step="0.01"
                         value={filterSettings.insuranceRange[0]}
                         onChange={(e) => setFilterSettings(prev => ({
@@ -371,8 +371,8 @@ const AdvancedControls = ({
                       />
                       <input
                         type="range"
-                        min="0"
-                        max="1"
+                        min="1"
+                        max="15"
                         step="0.01"
                         value={filterSettings.insuranceRange[1]}
                         onChange={(e) => setFilterSettings(prev => ({
@@ -597,7 +597,7 @@ const AdvancedControls = ({
                       <input
                         type="range"
                         min="0"
-                        max="50000"
+                        max="5e5"
                         step="1000"
                         value={filterSettings.broadbandRange[0]}
                         onChange={(e) => setFilterSettings(prev => ({
@@ -608,8 +608,8 @@ const AdvancedControls = ({
                       />
                       <input
                         type="range"
-                        min="50000"
-                        max="500000"
+                        min="10e5"
+                        max="35e5"
                         step="10000"
                         value={filterSettings.broadbandRange[1]}
                         onChange={(e) => setFilterSettings(prev => ({

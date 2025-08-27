@@ -29,19 +29,19 @@ const App = () => {
   // Filter and clustering state
   const [filterSettings, setFilterSettings] = useState({
     region: null,
-    populationRange: [0, 10000000],
+    populationRange: [0, 1e7],
     healthcareRange: [0, 100],
-    incomeRange: [0, 200000],
+    incomeRange: [0, 2e5],
     povertyRange: [0, 100],
     disabilityRange: [0, 100],
     educationRange: [0, 100],
-    insuranceRange: [0, 1],
+    insuranceRange: [0, 15],
     vulnerabilityRange: [0, 100],
     opportunityRange: [0, 100],
     resilienceRange: [0, 100],
     clusters: [],
     urbanRural: null,
-    broadbandRange: [0, 500000]
+    broadbandRange: [0, 35e5]
   });
 
   const [clusterMode, setClusterMode] = useState({
@@ -175,9 +175,9 @@ const App = () => {
   const filteredCounties = useMemo(() => {
     return counties.filter(county => {
       if (county.Population < filterSettings.populationRange[0] ||
-          county.Population > filterSettings.populationRange[1]) return false;
+        county.Population > filterSettings.populationRange[1]) return false;
       if (county.Healthcare_Access < filterSettings.healthcareRange[0] ||
-          county.Healthcare_Access > filterSettings.healthcareRange[1]) return false;
+        county.Healthcare_Access > filterSettings.healthcareRange[1]) return false;
       // Add more filters as needed based on filterSettings
       return true;
     });

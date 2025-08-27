@@ -51,8 +51,9 @@ const MapView = ({
           county.Healthcare_Access > filterSettings.healthcareRange[1]) return false;
       
       // Income range filter
-      if (county.Median_Income < filterSettings.incomeRange[0] || 
-          county.Median_Income > filterSettings.incomeRange[1]) return false;
+      const medianIncome = county.Median_Income < 0 ? 0 : county.Median_Income;
+      if (medianIncome < filterSettings.incomeRange[0] || 
+          medianIncome > filterSettings.incomeRange[1]) return false;
       
       // Poverty range filter
       if (county.Poverty_Rate < filterSettings.povertyRange[0] || 
@@ -210,7 +211,7 @@ const MapView = ({
         {/* State boundaries overlay */}
         <TileLayer
           url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}.png"
-          opacity={0.3}
+          opacity={0.7}
           bounds={US_BOUNDS}
         />
         
@@ -231,6 +232,23 @@ const MapView = ({
             />
           );
         })}
+        
+        {/* Debug info */}
+        {mapReady && process.env.NODE_ENV === 'development' && (
+          <div style={{ 
+            position: 'absolute', 
+            bottom: 10, 
+            left: 10, 
+            background: 'rgba(0,0,0,0.8)', 
+            color: 'white', 
+            padding: '5px',
+            fontSize: '12px',
+            zIndex: 1000,
+            borderRadius: '4px'
+          }}>
+            Counties: {filteredCounties.length} | Mode: {visualMode}
+          </div>
+        )}
       </MapContainer>
       
       {/* Map loading overlay */}
