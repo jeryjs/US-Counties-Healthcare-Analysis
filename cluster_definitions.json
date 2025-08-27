@@ -3,23 +3,23 @@
     "id": 0,
     "name": "Metro Powerhouses",
     "description": "Major urban centers with excellent access but high costs",
-    "county_count": 501,
-    "avg_healthcare_access": 68.65381964958827,
-    "avg_population": 322519.0499001996,
-    "avg_income": 90258.15169660679,
+    "county_count": 478,
+    "avg_healthcare_access": 69.4941008585104,
+    "avg_population": 345668.44769874477,
+    "avg_income": 90594.56485355648,
     "characteristics": {
       "healthcare_range": [
-        43.5548142857143,
-        94.84406833333334
+        48.4939904761905,
+        94.82448666666664
       ],
       "population_range": [
         189.0,
-        1440471.0
+        1525680.0
       ],
       "top_states": {
-        "Florida": 30,
-        "Colorado": 30,
-        "Virginia": 28
+        "Florida": 31,
+        "Colorado": 26,
+        "Virginia": 26
       }
     }
   },
@@ -27,23 +27,23 @@
     "id": 1,
     "name": "Suburban Stability",
     "description": "Well-resourced suburban communities with good outcomes",
-    "county_count": 1049,
-    "avg_healthcare_access": 46.03604345093315,
-    "avg_population": 31787.352716873214,
-    "avg_income": 52894.91229742612,
+    "county_count": 1283,
+    "avg_healthcare_access": 51.445679409617846,
+    "avg_population": 42369.495713172255,
+    "avg_income": 69725.97739672642,
     "characteristics": {
       "healthcare_range": [
-        39.24287142857143,
-        68.4072920634921
+        43.96267142857146,
+        68.35434761904763
       ],
       "population_range": [
-        54.0,
-        910433.0
+        385.0,
+        428748.0
       ],
       "top_states": {
-        "Georgia": 89,
-        "Texas": 80,
-        "Kentucky": 79
+        "Texas": 92,
+        "Nebraska": 85,
+        "Iowa": 77
       }
     }
   },
@@ -51,14 +51,14 @@
     "id": 2,
     "name": "Rural Resilience",
     "description": "Small towns with moderate access, strong community ties",
-    "county_count": 146,
-    "avg_healthcare_access": 44.226737445195596,
-    "avg_population": 36607.260273972606,
-    "avg_income": 31314.253424657534,
+    "county_count": 148,
+    "avg_healthcare_access": 45.0488048886549,
+    "avg_population": 36763.72297297297,
+    "avg_income": 32419.304054054053,
     "characteristics": {
       "healthcare_range": [
-        38.98731,
-        68.13703333333335
+        41.13621904761904,
+        68.02753809523813
       ],
       "population_range": [
         43.0,
@@ -67,7 +67,7 @@
       "top_states": {
         "Puerto Rico": 73,
         "Mississippi": 10,
-        "Kentucky": 9
+        "Texas": 10
       }
     }
   },
@@ -75,23 +75,23 @@
     "id": 3,
     "name": "Urban Challenges",
     "description": "Dense cities with mixed outcomes, high inequality",
-    "county_count": 27,
-    "avg_healthcare_access": 80.63180937095828,
-    "avg_population": 2688130.7407407407,
-    "avg_income": 90963.74074074074,
+    "county_count": 160,
+    "avg_healthcare_access": 47.2618404310967,
+    "avg_population": 24433.96875,
+    "avg_income": 54382.6,
     "characteristics": {
       "healthcare_range": [
-        68.75893015873012,
-        93.57735000000001
+        42.31287301587303,
+        65.20842380952381
       ],
       "population_range": [
-        1489634.0,
-        9848406.0
+        1095.0,
+        336749.0
       ],
       "top_states": {
-        "California": 8,
-        "Florida": 4,
-        "Texas": 4
+        "Texas": 26,
+        "Georgia": 15,
+        "Florida": 15
       }
     }
   },
@@ -99,23 +99,23 @@
     "id": 4,
     "name": "Healthcare Deserts",
     "description": "Underserved areas with critical access gaps",
-    "county_count": 160,
-    "avg_healthcare_access": 48.922101900252535,
-    "avg_population": 31974.65625,
-    "avg_income": 63823.74375,
+    "county_count": 24,
+    "avg_healthcare_access": 80.59928597222222,
+    "avg_population": 2835698.4583333335,
+    "avg_income": 90481.91666666667,
     "characteristics": {
       "healthcare_range": [
-        43.782719047619054,
-        67.79946507936508
+        69.72063809523809,
+        93.216055
       ],
       "population_range": [
-        540.0,
-        880921.0
+        1582432.0,
+        9848406.0
       ],
       "top_states": {
-        "Texas": 54,
-        "Missouri": 10,
-        "South Dakota": 10
+        "California": 8,
+        "Texas": 4,
+        "New York": 3
       }
     }
   },
@@ -123,23 +123,23 @@
     "id": 5,
     "name": "Growth Corridors",
     "description": "Rapidly developing areas with emerging needs",
-    "county_count": 1337,
-    "avg_healthcare_access": 50.9961428998501,
-    "avg_population": 43137.09723261032,
-    "avg_income": 68440.09872849664,
+    "county_count": 1127,
+    "avg_healthcare_access": 46.68451472091944,
+    "avg_population": 34289.796805678794,
+    "avg_income": 54140.85181898846,
     "characteristics": {
       "healthcare_range": [
-        40.41856000000001,
-        68.26370476190475
+        41.254814285714275,
+        68.53131428571429
       ],
       "population_range": [
-        385.0,
-        866275.0
+        54.0,
+        910433.0
       ],
       "top_states": {
-        "Texas": 86,
-        "Nebraska": 82,
-        "Iowa": 79
+        "Texas": 97,
+        "Georgia": 89,
+        "Kentucky": 80
       }
     }
   },
@@ -148,13 +148,13 @@
     "name": "College Towns",
     "description": "Education-focused communities with unique demographics",
     "county_count": 2,
-    "avg_healthcare_access": 42.18990857142857,
+    "avg_healthcare_access": 46.97764285714286,
     "avg_population": 507.0,
     "avg_income": -666666666.0,
     "characteristics": {
       "healthcare_range": [
-        41.93684571428572,
-        42.44297142857142
+        46.66182857142858,
+        47.29345714285714
       ],
       "population_range": [
         52.0,

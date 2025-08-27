@@ -8,8 +8,8 @@
       "Owner_Occupied",
       "Commute_Minutes"
     ],
-    "mae": 0.52,
-    "r2": 0.105
+    "mae": 2.03,
+    "r2": 0.104
   },
   "poverty_model": {
     "features": [
