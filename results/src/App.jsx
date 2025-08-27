@@ -5,6 +5,7 @@ import MapView from './components/MapView';
 import AdvancedControls from './components/AdvancedControls';
 import DetailedAnalysis from './components/DetailedAnalysis';
 import StateComparison from './components/StateComparison';
+import ColorLegend from './components/ColorLegend';
 import 'leaflet/dist/leaflet.css';
 
 const App = () => {
@@ -16,7 +17,7 @@ const App = () => {
   const [projections, setProjections] = useState([]);
   const [insights, setInsights] = useState([]);
   const [clusterDefinitions, setClusterDefinitions] = useState([]);
-  
+
   // UI state
   const [selectedCounty, setSelectedCounty] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
@@ -24,7 +25,7 @@ const App = () => {
   const [analysisMode, setAnalysisMode] = useState('overview');
   const [showStateComparison, setShowStateComparison] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Filter and clustering state
   const [filterSettings, setFilterSettings] = useState({
     region: null,
@@ -32,11 +33,11 @@ const App = () => {
     healthcareRange: [0, 100],
     clusters: []
   });
-  
+
   const [clusterMode, setClusterMode] = useState({
     active: false,
     colors: {
-      0: '#ff6b6b', 1: '#4ecdc4', 2: '#45b7d1', 3: '#96ceb4', 
+      0: '#ff6b6b', 1: '#4ecdc4', 2: '#45b7d1', 3: '#96ceb4',
       4: '#feca57', 5: '#ff9ff3', 6: '#54a0ff'
     }
   });
@@ -46,11 +47,11 @@ const App = () => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        
+
         // Load all data files in parallel
         const [
           countiesResponse,
-          statesResponse, 
+          statesResponse,
           colorScalesResponse,
           recommendationsResponse,
           projectionsResponse,
@@ -58,7 +59,7 @@ const App = () => {
           clustersResponse
         ] = await Promise.all([
           fetch('./comprehensive_county_data.json'),
-          fetch('./detailed_state_analysis.json'), 
+          fetch('./detailed_state_analysis.json'),
           fetch('./color_scales.json'),
           fetch('./policy_recommendations.json'),
           fetch('./projection_scenarios.json'),
@@ -103,7 +104,7 @@ const App = () => {
         setProjections(projectionsData);
         setInsights(insightsData);
         setClusterDefinitions(clustersData);
-        
+
         console.log('Loaded comprehensive dataset:', {
           counties: processedCounties.length,
           states: statesData.length,
@@ -111,13 +112,13 @@ const App = () => {
           projections: projectionsData.length,
           insights: insightsData.length
         });
-        
+
         // Debug: Check first county structure
         if (processedCounties.length > 0) {
           console.log('Sample county data:', processedCounties[0]);
           console.log('Color scales loaded:', Object.keys(colorScalesData));
         }
-        
+
       } catch (error) {
         console.error('Error loading data:', error);
         // Fallback to basic data if comprehensive data fails
@@ -293,68 +294,12 @@ const App = () => {
       />
 
       {/* Color Legend */}
-      <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.5 }}
-        className="absolute top-4 right-4 z-40"
-      >
-        <div className="glass-dark p-4 rounded-xl border border-neon-pink/30 w-64">
-          <h3 className="text-sm font-cyber font-bold text-white mb-3 flex items-center gap-2">
-            <Globe className="w-4 h-4 text-neon-pink" />
-            {currentColorScale?.name || 'Color Legend'}
-          </h3>
-          
-          {currentColorScale && (
-            <div className="space-y-2">
-              {/* Gradient bar */}
-              <div className="h-4 rounded-lg overflow-hidden bg-gradient-to-r"
-                   style={{
-                     background: `linear-gradient(to right, ${currentColorScale.colors.join(', ')})`
-                   }}
-              />
-              
-              {/* Labels */}
-              <div className="flex justify-between text-xs text-gray-400">
-                <span>{currentColorScale.domain[0]}</span>
-                <span>{currentColorScale.domain[Math.floor(currentColorScale.domain.length / 2)]}</span>
-                <span>{currentColorScale.domain[currentColorScale.domain.length - 1]}</span>
-              </div>
-              
-              {/* Category labels */}
-              {currentColorScale.labels && (
-                <div className="grid grid-cols-2 gap-1 text-xs">
-                  {currentColorScale.labels.slice(0, 6).map((label, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded border border-white/20"
-                        style={{ backgroundColor: currentColorScale.colors[idx] }}
-                      />
-                      <span className="text-gray-300">{label}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-          
-          {visualMode === 'cluster' && (
-            <div className="space-y-2">
-              <div className="text-xs text-gray-400 mb-2">County Clusters:</div>
-              {clusterDefinitions.map((cluster) => (
-                <div key={cluster.id} className="flex items-center gap-2 text-xs">
-                  <div 
-                    className="w-3 h-3 rounded border border-white/20"
-                    style={{ backgroundColor: clusterMode.colors[cluster.id] }}
-                  />
-                  <span className="text-gray-300">{cluster.name}</span>
-                  <span className="text-gray-500">({cluster.county_count})</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </motion.div>
+      <ColorLegend
+        currentColorScale={currentColorScale}
+        visualMode={visualMode}
+        clusterDefinitions={clusterDefinitions}
+        clusterMode={clusterMode}
+      />
 
       {/* Quick Stats Overlay */}
       {counties.length > 0 && (

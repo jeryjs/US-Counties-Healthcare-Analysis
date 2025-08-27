@@ -21,6 +21,25 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #00d4ff, #ff1a8c);
+}
+
+/* Custom scrollbar for color legend */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.8);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #00f5ff, #00ff41);
   box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
 }
