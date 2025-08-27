@@ -238,7 +238,7 @@ const AdvancedControls = ({
                       povertyRange: [0, 100],
                       disabilityRange: [0, 100],
                       educationRange: [0, 100],
-                      insuranceRange: [0, 15],
+                      insuranceRange: [0, 100],
                       vulnerabilityRange: [0, 100],
                       opportunityRange: [0, 100],
                       resilienceRange: [0, 100],
@@ -360,8 +360,8 @@ const AdvancedControls = ({
                       <input
                         type="range"
                         min="0"
-                        max="5"
-                        step="0.01"
+                        max="100"
+                        step="1"
                         value={filterSettings.insuranceRange[0]}
                         onChange={(e) => setFilterSettings(prev => ({
                           ...prev,
@@ -372,8 +372,8 @@ const AdvancedControls = ({
                       <input
                         type="range"
                         min="1"
-                        max="15"
-                        step="0.01"
+                        max="100"
+                        step="1"
                         value={filterSettings.insuranceRange[1]}
                         onChange={(e) => setFilterSettings(prev => ({
                           ...prev,

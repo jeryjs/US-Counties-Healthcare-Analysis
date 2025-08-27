@@ -35,7 +35,7 @@ const App = () => {
     povertyRange: [0, 100],
     disabilityRange: [0, 100],
     educationRange: [0, 100],
-    insuranceRange: [0, 15],
+    insuranceRange: [0, 100],
     vulnerabilityRange: [0, 100],
     opportunityRange: [0, 100],
     resilienceRange: [0, 100],
